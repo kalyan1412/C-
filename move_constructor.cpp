@@ -29,8 +29,7 @@ class Sample {
         Sample (Sample &&obj) {
             std::cout << "move" << std::endl;
             len = obj.len;
-            str = new char [len+1];
-            strcpy (str, obj.str);
+            str = obj.str;
             obj.str = nullptr;
         }
         ~Sample () {
