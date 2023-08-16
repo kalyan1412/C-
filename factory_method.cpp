@@ -1,58 +1,83 @@
+// Online C++ compiler to run C++ program online
+// Factory design pattern
 #include <iostream>
 
-class Product {
-    public:
-    virtual ~Product () { }
-    virtual std::string operation () = 0;
+enum Vehicle_type {
+    Bike_type,
+    Bus_type
 };
 
-class ConcreteProduct1 : public Product {
+class Vehicle {
     public:
-    std::string operation () {
-        return "ConcreteProduct1";
+        Vehicle () {
+            std::cout << "Vehicle constructor called" << std::endl;
+        }
+        virtual ~Vehicle () {
+            std::cout << "Vehicle Destructor called" << std::endl;   
+        }
+};
+
+class Bike : public Vehicle {
+    public:
+        Bike() {
+            std::cout << "Bike constructor called" << std::endl;
+        }
+          ~Bike () {
+           std::cout << "Bike Destructor called" << std::endl;
+        }
+};
+
+class Bus : public Vehicle {
+    public:
+        Bus () {
+           std::cout << "Bus constructor called" << std::endl; 
+        }
+        ~Bus () {
+           std::cout << "Bus Destructor called" << std::endl; 
+        }
+};
+
+class VehicleFactory {
+    public:
+    VehicleFactory () {
+        std::cout << "VehicleFactory constructor called" << std::endl;
+    }
+    ~VehicleFactory() {
+        std::cout << "VehicleFactory destructor called" << std::endl;
+    }
+    Vehicle *createVehicle (Vehicle_type type) {
+          if (type == Bike_type) {
+                return new Bike ();
+          } else if (type == Bus_type) {
+                return new Bus ();
+          } else {
+            std::cout << "invalid choice" << std::endl;
+            return nullptr;
+        }
     }
 };
 
-class ConcreteProduct2 : public Product {
-    public:
-    std::string operation () {
-        return "ConcreteProduct2";
-    }
-};
 
-class Creator{
-    public:
-    virtual ~Creator() { }
-    virtual Product* factorymethod() = 0;
-    void SomeOperation () {
-        Product *p = this->factorymethod();
-        std::cout << p->operation() << std::endl;
-    }
+class Client {
+    private:
+        Vehicle *v;
+    public :
+        Client()  {
+            std::cout << "Client Constructor called" << std::endl;
+        }
+        Vehicle *BuildVehicle (Vehicle_type type) {
+            VehicleFactory *vf = new VehicleFactory();
+            v = vf->createVehicle(type);
+            delete vf;
+        }
+        ~Client() {
+            delete v;
+            std::cout << "Client destructor called" << std::endl;
+        }
 };
-
-class CreatorConcreteProduct1 : public Creator{
-    public:
-    Product* factorymethod() {
-        return new ConcreteProduct1();
-    }
-};
-
-class CreatorConcreteProduct2 : public Creator{
-    public:
-    Product* factorymethod() {
-        return new ConcreteProduct2();
-    }
-};
-void create_client (Creator *c) {
-    c->SomeOperation();
-}
 
 int main() {
-    Creator *x = new CreatorConcreteProduct1();
-    create_client (x);
-    Creator  *y = new CreatorConcreteProduct2();
-    create_client (y);
-    delete x;
-    delete y;
+    Client c;
+    Vehicle *v = c.BuildVehicle(Bus_type);
     return 0;
 }
